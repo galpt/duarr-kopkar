@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net/http"
 	"os/exec"
@@ -32,11 +31,12 @@ func server() {
 		NumGCMem = fmt.Sprintf("%v", mem.NumGC)
 		timeElapsed = fmt.Sprintf("%v", time.Since(duration))
 
-		latestLog = fmt.Sprintf("\n •===========================• \n • [SERVER STATUS] \n • Last Modified: %v \n • Completed GC Cycles: %v \n • Time Elapsed: %v \n •===========================• \n\n", time.Now().UTC().Format(time.RFC850), NumGCMem, timeElapsed)
+		latestLog = fmt.Sprintf("\n •===========================• \n • [ SERVER STATUS ] \n • Last Modified: %v \n • Completed GC Cycles: %v \n • Time Elapsed: %v \n •===========================• \n\n", time.Now().UTC().Format(time.RFC850), NumGCMem, timeElapsed)
 
 		c.String(http.StatusOK, fmt.Sprintf("%v", latestLog))
 	})
 
+	// Check network status (for linux servers)
 	ginroute.GET("/netstat", func(c *gin.Context) {
 		runtime.ReadMemStats(&mem)
 		NumGCMem = fmt.Sprintf("%v", mem.NumGC)
@@ -50,15 +50,10 @@ func server() {
 			return
 		}
 
-		latestLog = fmt.Sprintf("\n •===========================• \n • [SERVER STATUS] \n • Last Modified: %v \n • Completed GC Cycles: %v \n • Time Elapsed: %v \n •===========================• \n\n %v \n", time.Now().UTC().Format(time.RFC850), NumGCMem, timeElapsed, string(stdout))
+		latestLog = fmt.Sprintf("\n •===========================• \n • [ SERVER STATUS ] \n • Last Modified: %v \n • Completed GC Cycles: %v \n • Time Elapsed: %v \n •===========================• \n\n %v \n", time.Now().UTC().Format(time.RFC850), NumGCMem, timeElapsed, string(stdout))
 
 		c.String(http.StatusOK, fmt.Sprintf("%v", latestLog))
 	})
-
-	tlsConf = &tls.Config{
-		InsecureSkipVerify: true,
-		// Certificates:       []tls.Certificate{serverTLSCert},
-	}
 
 	httpserverGin := &http.Server{
 		Addr:              fmt.Sprintf(":%v", hostPortGin),
@@ -72,7 +67,7 @@ func server() {
 	}
 	httpserverGin.SetKeepAlivesEnabled(true)
 
-	notifyGin := fmt.Sprintf("[Mirrors] Server is running on %v", fmt.Sprintf(":%v", hostPortGin))
+	notifyGin := fmt.Sprintf("Server is running on %v", fmt.Sprintf(":%v", hostPortGin))
 
 	fmt.Println()
 	fmt.Println(notifyGin)

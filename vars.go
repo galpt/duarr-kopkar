@@ -13,7 +13,7 @@ const (
 	timeoutTr     = 2 * time.Hour
 	memCacheLimit = 300 << 20 // 300 MB
 	hostPortGin   = "7777"
-	usrAgent      = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+	usrAgent      = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 )
 
 var (
