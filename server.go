@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os/exec"
 	"runtime"
 	"time"
 
@@ -36,21 +35,26 @@ func server() {
 		c.String(http.StatusOK, fmt.Sprintf("%v", latestLog))
 	})
 
-	// Check network status (for linux servers)
-	ginroute.GET("/netstat", func(c *gin.Context) {
+	ginroute.POST("/register", func(c *gin.Context) {
 		runtime.ReadMemStats(&mem)
 		NumGCMem = fmt.Sprintf("%v", mem.NumGC)
 		timeElapsed = fmt.Sprintf("%v", time.Since(duration))
 
-		cmd := exec.Command("tc", "-s", "qdisc")
-		stdout, err := cmd.Output()
+		pesan := "Berhasil membuat akun baru!"
 
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
+		latestLog = fmt.Sprintf("\n •===========================• \n • [ SERVER STATUS ] \n • Last Modified: %v \n • Completed GC Cycles: %v \n • Time Elapsed: %v \n •===========================• \n\n %v \n", time.Now().UTC().Format(time.RFC850), NumGCMem, timeElapsed, string(pesan))
 
-		latestLog = fmt.Sprintf("\n •===========================• \n • [ SERVER STATUS ] \n • Last Modified: %v \n • Completed GC Cycles: %v \n • Time Elapsed: %v \n •===========================• \n\n %v \n", time.Now().UTC().Format(time.RFC850), NumGCMem, timeElapsed, string(stdout))
+		c.String(http.StatusOK, fmt.Sprintf("%v", latestLog))
+	})
+
+	ginroute.POST("/login", func(c *gin.Context) {
+		runtime.ReadMemStats(&mem)
+		NumGCMem = fmt.Sprintf("%v", mem.NumGC)
+		timeElapsed = fmt.Sprintf("%v", time.Since(duration))
+
+		pesan := "Logged in!"
+
+		latestLog = fmt.Sprintf("\n •===========================• \n • [ SERVER STATUS ] \n • Last Modified: %v \n • Completed GC Cycles: %v \n • Time Elapsed: %v \n •===========================• \n\n %v \n", time.Now().UTC().Format(time.RFC850), NumGCMem, timeElapsed, string(pesan))
 
 		c.String(http.StatusOK, fmt.Sprintf("%v", latestLog))
 	})
